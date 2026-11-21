@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Video Editor Library</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0a0a0d;color:#fff}
+header{padding:22px 16px 6px}header h1{margin:0;font-size:24px}header p{color:#aaa;margin:6px 0 0;font-size:14px}
+h2{margin:22px 16px 10px;font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:0 16px}
+.card{border-radius:12px;min-height:100px;padding:12px;position:relative;overflow:hidden;background:linear-gradient(135deg,#23233a,#3a2340)}
+.card b{display:block;font-size:15px;text-shadow:1px 1px 3px #000}
+.card small{color:#e8e8e8;text-shadow:1px 1px 2px #000;font-size:12px}
+.mat{background:#17171f;border:1px solid #262633;min-height:64px}
+.mat small{color:#aaa;text-shadow:none}
+footer{color:#777;font-size:13px;padding:24px 16px 30px}
+code{background:#1d1d28;padding:2px 6px;border-radius:5px}
+</style></head><body>
+<header>
+<h1>🎬 Video Editor Library</h1>
+<p>Trending templates aur materials — Video Editor app ke liye online library. Saare presets original hain.</p>
+</header>
+<h2>🔥 Trending Templates</h2>
+<div class="grid" id="trendGrid"><p style="color:#888;padding:0 4px">Load ho raha hai…</p></div>
+<h2>🎬 Materials</h2>
+<div class="grid" id="matGrid"></div>
+<footer>
+App me use karne ke liye: is page ke address ke saath <code>library.json</code> wali file Video Editor app ke
+<b>Me → Online Library</b> me daalo. File: <code>library.json</code>
+</footer>
+<script>
+fetch("library.json").then(r=>r.json()).then(data=>{
+  const tg=document.getElementById("trendGrid"); tg.innerHTML="";
+  (data.trending||[]).forEach(t=>{
+    const d=document.createElement("div"); d.className="card";
+    if(Array.isArray(t.gradient)&&t.gradient.length>=2) d.style.background="linear-gradient(135deg,"+t.gradient.join(",")+")";
+    const p=t.preset||{};
+    d.innerHTML="<b></b><small></small>";
+    d.querySelector("b").textContent=t.name;
+    d.querySelector("small").textContent=(t.category||"Template")+" • "+(p.filter||"")+" • "+(p.vfx||"");
+    tg.appendChild(d);
+  });
+  const mg=document.getElementById("matGrid"); mg.innerHTML="";
+  (data.materials||[]).forEach(m=>{
+    const d=document.createElement("div"); d.className="card mat";
+    d.innerHTML="<b></b><small></small>";
+    d.querySelector("b").textContent=(m.type==="sticker"?(m.value+" "):"")+m.name;
+    d.querySelector("small").textContent=m.type+" • "+m.value;
+    mg.appendChild(d);
+  });
+}).catch(e=>{
+  document.getElementById("trendGrid").innerHTML="<p style='color:#f88'>library.json load nahi hua: "+e.message+"</p>";
+});
+</script>
+</body></html>
